@@ -1,0 +1,35 @@
+name: Windows EXE
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - name: Install build dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Test application
+        shell: pwsh
+        run: |
+          $env:MS_DATA = Join-Path $env:RUNNER_TEMP 'mrc-tests'
+          python -m unittest -v test_questions test_thoughts_fix test_llm_any_url test_mailbox test_streaming test_plugins test_agent_fixes test_windows_startup test_ide_build
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Download and verify Ruslan voice
+        run: python download_voice.py
+      - name: Build one-file EXE
+        run: python -m PyInstaller mrcagent.spec --noconfirm --clean
+      - name: Verify background EXE and packaged files
+        run: python windows_smoke.py dist/MRCAgent.exe
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: MRCAgent-Windows-x64
+          path: dist/MRCAgent.exe
+          if-no-files-found: error

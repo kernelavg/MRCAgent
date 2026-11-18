@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>MRCAgent Mobile</title>
+  <link rel="stylesheet" href="/static/mobile.css">
+</head>
+<body>
+<main class="shell">
+  <header class="header"><div class="brand"><span class="brand-icon">✳</span><div><strong>MRCAgent</strong><small>MOBILE WORKSPACE</small></div></div><span class="connection" id="connection"><i></i> Подключение</span></header>
+  <section id="login" class="hidden">
+    <div class="login-hero"><div class="eyebrow"><span class="pulse"></span> ВАШИ АГЕНТЫ НА СВЯЗИ</div><h1>Ваш проект.<br><em>Всегда рядом.</em></h1><p>Рабочее пространство MRCAgent теперь в вашем телефоне.</p><div class="orbit"><span>✳</span></div></div>
+    <form id="loginForm" class="panel login-panel"><div class="label-row"><span class="eyebrow">ДОСТУП К КОМПЬЮТЕРУ</span><span class="tiny-icon">↗</span></div><h2>Войти в аккаунт</h2><p class="muted">Используйте данные от MRCAgent на ПК.</p><label>Имя пользователя<input id="name" autocomplete="username" required placeholder="Ваше имя"></label><label>Пароль<input id="password" type="password" autocomplete="current-password" required placeholder="••••••••"></label><div id="insecure" class="warning hidden">HTTP не шифрует пароль в обычном Wi‑Fi. Используйте доверенную сеть или Tailscale; не открывайте порт в интернет.</div><label id="insecureLabel" class="check hidden"><input id="acceptHttp" type="checkbox"> Я понимаю риск HTTP</label><button class="primary wide" type="submit">Подключиться <span>↗</span></button><div id="loginError" class="error" role="alert"></div></form>
+  </section>
+  <section id="dashboard" class="hidden">
+    <div class="dashboard-head"><div><div class="eyebrow">ВАША РАБОЧАЯ СТАНЦИЯ <span class="accent">●</span></div><h1>Пульт управления<span class="accent">.</span></h1><p class="muted">Все проекты под рукой</p></div><button id="logout" class="icon-button" aria-label="Выйти">↗</button></div>
+    <div class="stats"><div><span class="stat-icon violet">◫</span><small>ПРОЕКТОВ</small><strong id="totalProjects">0</strong></div><div><span class="stat-icon mint">◉</span><small>В РАБОТЕ</small><strong id="activeProjects">0</strong></div><div><span class="stat-icon gold">✉</span><small>ВОПРОСОВ</small><strong id="pendingCount">0</strong></div></div>
+    <div class="section-head"><div><span class="eyebrow">ВАШ WORKSPACE</span><h2>Проекты</h2></div><button id="refresh" class="text-button">Обновить ↻</button></div><div id="projects" class="projects"></div>
+    <section id="details" class="hidden">
+      <div class="selected-head"><div class="selected-icon">◈</div><div class="selected-title"><small>ВЫБРАННЫЙ ПРОЕКТ</small><h2 id="projectName"></h2></div><span id="projectStatus" class="badge"></span></div>
+      <nav class="tabs" aria-label="Разделы проекта"><button class="tab active" data-tab="overview">Обзор</button><button class="tab" data-tab="agents">Агенты</button><button class="tab" data-tab="build">Сборка</button><button class="tab" data-tab="questions">Вопросы <span id="questionBadge">0</span></button></nav>
+      <div class="tab-content" data-panel="overview">
+        <div class="panel project-panel"><div class="panel-top"><div><span class="eyebrow">АКТИВНОСТЬ</span><h3>Команда в работе</h3></div><div class="live"><span></span> LIVE</div></div><div class="project-metrics"><div><small>АГЕНТЫ ГОТОВЫ</small><strong id="agentCount">0 / 0</strong></div><div><small>ТОКЕНЫ</small><strong id="tokens">0</strong></div></div><div class="progress"><span id="progress"></span></div><div class="controls"><button id="start" class="primary">▶ Запустить</button><button id="pause" class="soft">Ⅱ Пауза</button><button id="resume" class="soft">Продолжить</button><button id="stop" class="soft danger">■ Стоп</button></div></div>
+        <div class="section-head compact"><div><span class="eyebrow">ЧТО ПРОИСХОДИТ</span><h2>Лента событий</h2></div><span class="caption">недавние</span></div><div id="events" class="panel events"></div>
+      </div>
+      <div class="tab-content hidden" data-panel="agents"><div class="section-head compact"><div><span class="eyebrow">ЦИФРОВАЯ КОМАНДА</span><h2>Агенты</h2></div><span class="caption">состояние сейчас</span></div><div id="agents" class="agents"></div></div>
+      <div class="tab-content hidden" data-panel="build"><div class="section-head compact"><div><span class="eyebrow">MRCIDE STUDIO</span><h2>Последняя сборка</h2></div><span class="build-dot">●</span></div><div class="panel build-panel"><div id="buildStatus" class="build-status">Нет сборок</div><pre id="buildLog" class="log">Ожидание сборки</pre><div id="artifacts" class="artifacts"></div><div class="caption">Запуск сборки — на ПК. Здесь видны журнал и результаты.</div></div></div>
+      <div class="tab-content hidden" data-panel="questions"><div class="section-head compact"><div><span class="eyebrow">КОМАНДА НА СВЯЗИ</span><h2>Вопросы агентов</h2></div><span class="caption">ожидание до 2 мин</span></div><div id="questions" class="questions"></div></div>
+    </section>
+    <div id="questionsWithoutProject" class="hidden"><div class="section-head compact"><h2>Вопросы агентов</h2></div><p class="muted">Выберите проект, чтобы открыть вопросы.</p></div>
+    <footer><span class="pulse"></span> СИНХРОНИЗАЦИЯ С ПК · ПОКА ЭКРАН ОТКРЫТ</footer>
+  </section>
+  <div id="toast" class="toast hidden" role="status"></div>
+</main><script src="/static/mobile.js"></script>
+</body></html>

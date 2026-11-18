@@ -2,11 +2,11 @@
 
 ### Your workspace for conversations, coordinated AI agents and building projects
 
-[Русский](#русский) · [English](#english) · [Download for Windows](https://gofile.io/d/NPFdiLKp) · [Video overview](https://gofile.io/d/r28H8uzs)
+[Русский](#русский) · [English](#english) · [Download for Windows](https://github.com/kernelavg/MRCAgent/releases/latest/download/MRCAgent.exe) · [Video overview](https://gofile.io/d/r28H8uzs)
 
 ![MRCAgent interface in demo mode](interface.png)
 
-> Early preview. This public repository is the project information page; it does not contain the MRCAgent source code. The download link is hosted by a third party and may expire.
+> Early preview. The source code is in [`source/`](source/). Windows builds and source archives are available on the [Releases page](https://github.com/kernelavg/MRCAgent/releases).
 
 ---
 
@@ -24,9 +24,13 @@
 - **Language settings:** choose Russian or English under **More → Interface language**. Translation is currently partial; it does not translate chat messages or files.
 - **Skills, plugins and MCP:** manage instructions and external tools. Only enable plugins and servers you trust; they can execute code or access the network.
 
+### Source code
+
+The application and build scripts are in [`source/`](source/). [Download the source archive](https://github.com/kernelavg/MRCAgent/releases/latest/download/MRCAgent-source.zip). The owner has not yet specified a license for their own code; public visibility alone is not a grant of reuse rights. See [third-party notices](THIRD_PARTY_NOTICES.md).
+
 ### Try it
 
-1. [Download the Windows x64 preview](https://gofile.io/d/NPFdiLKp) (about 106 MiB).
+1. [Download the Windows x64 preview](https://github.com/kernelavg/MRCAgent/releases/latest/download/MRCAgent.exe) (about 106 MiB).
 2. Run it on Windows. Windows may show a warning for an unsigned application.
 3. Explore demo mode or configure your preferred provider in settings. Provider requests may incur charges.
 
@@ -52,9 +56,13 @@ The GitHub Actions build completed, and the browser-based language and voice tes
 - **Русский и английский:** переключатель находится в разделе **Ещё → Язык интерфейса**. Перевод пока частичный; сообщения и файлы не переводятся.
 - **Скиллы, плагины и MCP:** инструкции и внешние инструменты для агентов. Включайте только доверенные плагины и серверы: они могут запускать программы и обращаться к сети.
 
+### Исходный код
+
+Код приложения и сценарии сборки находятся в [`source/`](source/). [Скачать архив исходников](https://github.com/kernelavg/MRCAgent/releases/latest/download/MRCAgent-source.zip). Лицензия на собственный код проекта владельцем пока не указана; публичный доступ сам по себе не даёт разрешения на повторное использование. См. [уведомления о сторонних компонентах](THIRD_PARTY_NOTICES.md).
+
 ### Попробовать
 
-1. [Скачать предварительную версию для Windows x64](https://gofile.io/d/NPFdiLKp) (около 106 МиБ).
+1. [Скачать предварительную версию для Windows x64](https://github.com/kernelavg/MRCAgent/releases/latest/download/MRCAgent.exe) (около 106 МиБ).
 2. Запустить на Windows. Для приложения без цифровой подписи Windows может показать предупреждение.
 3. Открыть демо-режим или настроить нужного провайдера. Запросы к провайдеру могут быть платными.
 
@@ -64,7 +72,7 @@ The GitHub Actions build completed, and the browser-based language and voice tes
 
 ### Third-party licenses / Лицензии компонентов
 
-- `piper-tts` 1.8.0: [GPL-3.0-or-later](https://pypi.org/project/piper-tts/1.8.0/). Distribution may require providing corresponding source and other license compliance steps. The MRCAgent source is not published in this repository; compliance for this preview has not been independently verified.
+- `piper-tts` 1.8.0: [GPL-3.0-or-later](https://pypi.org/project/piper-tts/1.8.0/). Distribution may require providing corresponding source and other license compliance steps. Application source and build scripts are published in `source/`; complete compliance for this preview has not been independently verified.
 - The [Ruslan model card](https://huggingface.co/rhasspy/piper-voices/blob/main/ru/ru_RU/ruslan/medium/MODEL_CARD) identifies its training dataset as [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). Check all applicable model and dataset terms before use or distribution, especially commercial use.
 
-Piper 1.8.0 имеет лицензию GPL-3.0-or-later; публичное распространение может требовать предоставления соответствующих исходников. В этой странице исходники MRCAgent не опубликованы, соответствие условиям пока не проверено. Для данных голоса указан CC BY-NC-SA 4.0 — коммерческое использование требует отдельной проверки прав.
+Piper 1.8.0 имеет лицензию GPL-3.0-or-later; публичное распространение может требовать предоставления соответствующих исходников. Исходники MRCAgent доступны в `source/`, но полное соответствие условиям распространения пока не проверено. Для данных голоса указан CC BY-NC-SA 4.0 — коммерческое использование требует отдельной проверки прав.

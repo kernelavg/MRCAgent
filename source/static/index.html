@@ -1,0 +1,783 @@
+<!doctype html>
+<html lang="ru" data-theme="dark" data-accent="violet">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>MRC Agent</title>
+<link rel="stylesheet" href="/static/app.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%237C5CFF'/><circle cx='16' cy='16' r='6' fill='white' fill-opacity='.9'/><circle cx='16' cy='16' r='10' stroke='white' stroke-opacity='.45' stroke-width='1.6' fill='none'/></svg>">
+</head>
+<body>
+
+<!-- Заставка запуска приложения, не загрузчик проекта -->
+<div id="appStartup" class="startup" role="status" aria-live="polite" aria-label="Запуск MRC Agent">
+  <div class="startup-glow" aria-hidden="true"></div>
+  <div class="startup-content">
+    <div class="startup-emblem" aria-hidden="true">
+      <div class="startup-halo"></div><div class="startup-orbit orbit-a"></div><div class="startup-orbit orbit-b"></div>
+      <div class="startup-glyph"><svg viewBox="0 0 64 64"><path d="M14 43V21l18 18 18-18v22"/><circle cx="32" cy="39" r="2.4"/></svg></div>
+      <div class="startup-node node-a"></div><div class="startup-node node-b"></div><div class="startup-node node-c"></div>
+    </div>
+    <div class="startup-brand">MRC <span>AGENT</span></div>
+    <div class="startup-caption">Подготавливаем рабочее пространство</div>
+    <div class="startup-track" aria-hidden="true"><div class="startup-beam"></div></div>
+  </div>
+</div>
+<script>
+window.mrcStartupStarted = Date.now();
+window.setTimeout(function () { var s = document.getElementById('appStartup'); if (s) s.remove(); }, 12000);
+</script>
+
+<!-- ============================ иконки ============================ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.8-.8L3 21l1.9-5.2A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z"/></symbol>
+  <symbol id="i-agents" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m9 18-6-6 6-6M15 6l6 6-6 6"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1Z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12 20 4l-7 16-2.2-6.4L4 12Z"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2.5"/><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3H5.5A2.5 2.5 0 0 0 3 5.5v7A2.5 2.5 0 0 0 5.5 15"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5 19 12 7 19.5Z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 4v16M16 4v16"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3v5h5"/><path d="M19 8.5V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6.5Z"/></symbol>
+    <symbol id="i-clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.5 12 20a5 5 0 0 1-7-7l8.5-8.5a3.5 3.5 0 0 1 5 5L10 18a2 2 0 0 1-3-3l8-8"/></symbol>
+    
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12.5 5 5L20 6.5"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18Z"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="m7 10 3 2.5L7 15M13 15h4"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M10 8l-4 4 4 4M6 12h9"/></symbol>
+  <symbol id="i-skill" viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.7" fill="none"/></symbol>
+<symbol id="i-note" viewBox="0 0 24 24"><path d="M9 18V6l9-2v12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/><circle cx="6.5" cy="18" r="2.5" stroke="currentColor" stroke-width="1.7" fill="none"/><circle cx="15.5" cy="16" r="2.5" stroke="currentColor" stroke-width="1.7" fill="none"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 4h11l4 4v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M8 4v5h7"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-arrow-in" viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M4 12h10M10 8l4 4-4 4"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></symbol>
+  <symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 3v6M15 3v6M6 9h12v3a6 6 0 0 1-6 6 6 6 0 0 1-6-6V9ZM12 18v3"/></symbol>
+  <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></symbol>
+  <symbol id="i-mark" viewBox="0 0 48 48">
+    <defs>
+      <linearGradient id="mkGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#9C82FF"/><stop offset="55%" stop-color="#7C5CFF"/><stop offset="1" stop-color="#5B34E0"/>
+      </linearGradient>
+    </defs>
+    <rect x="1" y="1" width="46" height="46" rx="12" fill="url(#mkGrad)"/>
+    <path d="M13 35V14l11 12 11-12v21" fill="none" stroke="#fff" stroke-width="5.4"
+          stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="24" cy="26" r="4.1" fill="#fff"/><circle cx="24" cy="26" r="1.7" fill="#7C5CFF"/>
+  </symbol>
+</svg>
+
+<!-- ============================ вход ============================ -->
+<div class="login" id="login">
+  <div class="login-bg"></div>
+  <div class="login-shell">
+  <aside class="login-intro" aria-label="О приложении MRC Agent">
+    <div class="intro-brand"><img src="/static/mark.png" alt=""><span>MRC <b>AGENT</b></span><span class="intro-version">WORKSPACE</span></div>
+    <div class="intro-copy">
+      <div class="intro-kicker"><span></span> ВАШЕ РАБОЧЕЕ ПРОСТРАНСТВО</div>
+      <h2>От идеи<br>к результату<span>.</span></h2>
+      <p>Планируйте, создавайте и проверяйте проекты вместе с командой цифровых агентов.</p>
+      <div class="intro-steps"><div><i>01</i><span>Опишите задачу</span></div><div><i>02</i><span>Наблюдайте за работой</span></div><div><i>03</i><span>Заберите результат</span></div></div>
+    </div>
+    <div class="intro-foot"><span>СОЗДАНО ДЛЯ ВАШИХ ИДЕЙ</span><span>✳</span></div>
+  </aside>
+  <div class="login-card">
+    <div class="login-mark"><img class="mark-ic" src="/static/mark.png" alt=""></div>
+    <h1>Добро пожаловать</h1>
+    <p class="login-tag">Войдите или создайте аккаунт, чтобы продолжить работу.</p>
+
+    <form class="login-form" id="loginForm" autocomplete="off">
+      <div class="login-tabs" role="tablist">
+        <button type="button" class="login-tab is-on" data-mode="login" role="tab">Вход</button>
+        <button type="button" class="login-tab" data-mode="register" role="tab">Регистрация</button>
+      </div>
+
+      <label class="login-label" for="loginNick">Никнейм</label>
+      <input id="loginNick" class="login-input" type="text" name="nick"
+             placeholder="например, alex" maxlength="32" spellcheck="false" autocomplete="username" autofocus>
+
+      <label class="login-label" for="loginPass">Пароль</label>
+      <div class="pass-wrap">
+        <input id="loginPass" class="login-input" type="password" name="password"
+               placeholder="минимум 6 символов" autocomplete="current-password">
+        <button type="button" class="pass-eye" id="passEye" aria-label="показать пароль">
+          <svg class="ic"><use href="#i-eye"/></svg>
+        </button>
+      </div>
+
+      <div id="passRepeatWrap" hidden>
+        <label class="login-label" for="loginPass2">Пароль ещё раз</label>
+        <input id="loginPass2" class="login-input" type="password" placeholder="повторите пароль"
+               autocomplete="new-password">
+      </div>
+
+      <button class="btn btn-primary login-submit" id="btnLogin" type="submit">
+        <svg class="ic"><use href="#i-arrow-in"/></svg>
+        <span id="btnLoginText">Войти</span>
+      </button>
+
+      <div class="login-note" id="loginNote">Пароль хранится только у вас: PBKDF2-хэш в
+        <code>data/studio.db</code>, наружу ничего не уходит.</div>
+    </form>
+
+    <div class="login-feats">
+      <div><b>100</b><span>агентов в рое</span></div>
+      <div><b>SQLite</b><span>всё сохраняется</span></div>
+      <div><b>24/7</b><span>работают в фоне</span></div>
+    </div>
+
+    <div class="login-foot">
+      Данные хранятся локально. Запросы к модели отправляются выбранному провайдеру.
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ============================ приложение ============================ -->
+<div class="app hidden" id="app">
+
+  <nav class="rail">
+    <div class="rail-top">
+      <div class="rail-logo" title="MRC Agent"><img class="mark-ic" src="/static/mark.png" alt=""></div>
+      <button class="rail-btn active" data-view="chats"><svg class="ic"><use href="#i-chat"/></svg><span>Чаты</span></button>
+      <button class="rail-btn" data-view="agents"><svg class="ic"><use href="#i-agents"/></svg><span>Агенты</span><i class="rail-badge" id="badgeAgents">0</i></button>
+      <button class="rail-btn" data-view="projects"><svg class="ic"><use href="#i-folder"/></svg><span>Проекты</span></button>
+      <button class="rail-btn" data-view="ide"><svg class="ic"><use href="#i-terminal"/></svg><span>IDE</span></button>
+      <button class="rail-btn" data-view="workspace"><svg class="ic"><use href="#i-code"/></svg><span>Файлы</span></button>
+      <button class="rail-btn" data-view="skills"><svg class="ic"><use href="#i-skill"/></svg><span>Скиллы</span></button>
+      <button class="rail-btn" data-view="plugins"><svg class="ic"><use href="#i-plug"/></svg><span>Плагины</span></button>
+      <button class="rail-btn" data-view="mcp"><svg class="ic"><use href="#i-globe"/></svg><span>MCP</span></button>
+      <button class="rail-btn" id="btnMusic" title="Музыка: вкл/выкл"><svg class="ic"><use href="#i-note"/></svg><span>Играет</span></button>
+    </div>
+    <div class="rail-bottom">
+      <button class="rail-btn" data-view="settings"><svg class="ic"><use href="#i-gear"/></svg><span>Ещё</span></button>
+      <button class="avatar sm" id="railAvatar" title="Профиль"></button>
+    </div>
+  </nav>
+
+  <aside class="panel">
+    <header class="panel-head">
+      <h2 id="panelTitle">Чаты</h2>
+      <div class="panel-head-actions">
+        <button class="icon-btn" id="panelAction" title="Создать"><svg class="ic"><use href="#i-plus"/></svg></button>
+      </div>
+    </header>
+    <div class="panel-search">
+      <svg class="ic"><use href="#i-search"/></svg>
+      <input id="panelFilter" placeholder="Поиск…" autocomplete="off">
+    </div>
+    <div class="panel-body" id="panelBody"></div>
+    <footer class="panel-foot" id="panelFoot"></footer>
+  </aside>
+
+  <main class="main">
+
+    <!-- ---------- чат ---------- -->
+    <section class="view active" id="view-chats">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-btn only-mobile" id="togglePanel"><svg class="ic"><use href="#i-chat"/></svg></button>
+          <div class="topbar-title" id="chatTitle">Mercury</div>
+          <span class="chip" id="chatModelChip">mercury-3</span>
+          <label class="effort-control" title="Глубина рассуждения для новых запросов">Effort
+            <select id="chatEffort" aria-label="Уровень Effort">
+              <option value="instant">instant</option><option value="low">low</option><option value="medium">medium</option><option value="high">high</option>
+            </select>
+          </label>
+        </div>
+        <div class="topbar-right">
+          <button class="icon-btn" id="kbdHint" title="Команды"><span class="kbd">⌘K</span></button>
+        </div>
+      </header>
+      <div class="chat-scroll" id="chatScroll">
+        <div class="chat-empty" id="chatEmpty">
+          <div class="chat-empty-mark"><img class="mark-ic" src="/static/mark.png" alt=""></div>
+          <div class="chat-eyebrow"><span></span> ВАШ AI WORKSPACE</div>
+          <h2>Что создадим сегодня<span>?</span></h2>
+          <p>Начните с вопроса или доверьте проект команде цифровых агентов.</p>
+          <div class="suggest-label">ПОПРОБУЙТЕ НАЧАТЬ С ЭТОГО <span>↗</span></div>
+          <div class="suggest" id="suggest">
+            <button data-s="Собери телеграм-бота на python: заявки, sqlite, админка"><span class="suggest-icon">↗</span><b>Телеграм-бот</b><small>Заявки, база и админка</small></button>
+            <button data-s="Спарси цены и сделай дашборд на html"><span class="suggest-icon">⌁</span><b>Парсер и дашборд</b><small>Сбор и визуализация данных</small></button>
+            <button data-s="Напиши лендинг для VPN-сервиса, минималистичный"><span class="suggest-icon">◫</span><b>Лендинг</b><small>Идея, структура и интерфейс</small></button>
+            <button data-s="Проверь этот код и найди баги"><span class="suggest-icon">⌘</span><b>Проверка кода</b><small>Найти ошибки и улучшения</small></button>
+          </div>
+        </div>
+        <div class="messages" id="messages"></div>
+      </div>
+      <div class="composer-wrap">
+        <div class="composer">
+          <textarea id="composer" rows="1" placeholder="Спросите Mercury…  (Enter — отправить, Shift+Enter — перенос)"></textarea>
+          <div class="composer-actions">
+            <button class="icon-btn voice-mic" id="btnVoiceInput" type="button" title="Диктовать запрос" aria-label="Начать голосовой ввод" aria-pressed="false"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3m-4 0h8"></path></svg></button>
+            <button class="icon-btn" id="btnRunSwarm" title="Запустить рой агентов"><svg class="ic"><use href="#i-agents"/></svg></button>
+            <button class="btn-send" id="btnSend" title="Отправить"><svg class="ic"><use href="#i-send"/></svg></button>
+          </div>
+        </div>
+        <div class="composer-foot">
+          <span id="composerHint">Mercury 3 · ответ приходит потоком</span>
+          <span id="voiceStatus" class="voice-status" role="status" aria-live="polite" hidden></span>
+          <span class="dot-sep">·</span>
+          <span id="composerCost">0 т</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- агенты ---------- -->
+    <section class="view" id="view-agents">
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-title">Агенты</div>
+          <span class="status-pill" id="runStatus"><i></i><span>нет проекта</span></span>
+        </div>
+        <div class="topbar-right">
+          <div class="stat-group">
+            <div class="stat"><b id="stWorking">0</b><span>в работе</span></div>
+            <div class="stat"><b id="stDone">0</b><span>готово</span></div>
+            <div class="stat"><b id="stTokens">0</b><span>токенов</span></div>
+            <div class="stat" title="по реальным токенам модели; в демо-режиме — ноль"><b id="stCost">$0</b><span>стоимость</span></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-ghost sm" id="btnPause" disabled><svg class="ic"><use href="#i-pause"/></svg>Пауза</button>
+            <button class="btn btn-ghost sm" id="btnStop" disabled><svg class="ic"><use href="#i-stop"/></svg>Стоп</button>
+            <button class="btn btn-primary sm" id="btnStart"><svg class="ic"><use href="#i-play"/></svg>Запустить</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="plan-strip" id="planStrip" hidden>
+        <svg class="ic"><use href="#i-spark"/></svg>
+        <div class="plan-text"></div>
+      </div>
+
+      <div class="agents-toolbar">
+        <div class="filters" id="laneFilters"></div>
+        <div class="search-inline">
+          <svg class="ic"><use href="#i-search"/></svg>
+          <input id="agentSearch" placeholder="Найти агента…" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="agents-scroll">
+        <div class="agents-grid" id="agentsGrid"></div>
+        <div class="empty-state" id="agentsEmpty" hidden>
+          <div class="empty-icon"><svg class="ic"><use href="#i-agents"/></svg></div>
+          <h3>Пока нет проекта с агентами</h3>
+          <p>Создайте проект — рой из 100 агентов сразу разберёт его на задачи.</p>
+          <button class="btn btn-primary" data-goto="projects">Создать проект</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- проекты ---------- -->
+    <section class="view" id="view-projects">
+      <header class="topbar">
+        <div class="topbar-left"><div class="topbar-title">Проекты</div></div>
+        <div class="topbar-right">
+          <button class="btn btn-primary sm" id="btnNewProject"><svg class="ic"><use href="#i-plus"/></svg>Новый проект</button>
+        </div>
+      </header>
+      <div class="projects-scroll">
+        <div class="new-project" id="newProjectCard">
+          <div class="np-head">
+            <svg class="ic"><use href="#i-spark"/></svg>
+            <div>
+              <h3>Что должны сделать 100 агентов?</h3>
+              <p>Опишите цель одной фразой — рой сам разложит её на файлы и задачи.</p>
+            </div>
+          </div>
+          <textarea id="npGoal" rows="2" placeholder="Например: телеграм-бот приёма заявок с sqlite и админкой"></textarea>
+          <div class="file-chips" id="npChips" hidden></div>
+          <div class="np-attach">
+            <button class="btn btn-ghost sm" id="btnNpAttach" type="button"><svg class="ic"><use href="#i-clip"/></svg>Прикрепить файл</button>
+            <span class="np-hint">любой формат · в запросе сослаться можно через <b>@</b></span>
+            <input type="file" id="npFileInput" multiple hidden>
+          </div>
+          <div class="at-menu hidden" id="npAtMenu"></div>
+          <div class="np-row">
+            <label class="field-inline">
+              <span>Агентов</span>
+              <input type="number" id="npAgents" value="100" min="4" max="200">
+            </label>
+            <button class="btn btn-primary" id="btnCreateProject"><svg class="ic"><use href="#i-play"/></svg>Создать и запустить</button>
+          </div>
+        </div>
+        <div class="projects-list" id="projectsList"></div>
+      </div>
+    </section>
+
+    <!-- ---------- MRCIDE Studio ---------- -->
+    <section class="view" id="view-ide">
+      <header class="topbar"><div class="topbar-left"><div class="topbar-title">MRCIDE Studio</div><span class="ide-badge" title="Ранняя версия: некоторые функции и платформы ещё не проверены">РАННЯЯ ВЕРСИЯ</span></div><div class="topbar-right"><button class="btn btn-ghost sm" id="ideOpenFiles">Открыть файлы</button><button class="btn btn-ghost sm" id="ideOpenAgents">Агенты</button></div></header>
+      <div class="ide-scroll">
+        <div class="ide-intro"><div><span class="ide-kicker">РАБОЧЕЕ ПРОСТРАНСТВО</span><h2>Сборка проекта</h2><p>Выберите проект и платформу, затем проверьте окружение.</p></div></div>
+        <div class="ide-grid"><div class="ide-card"><div class="ide-card-head"><b>Настройки сборки</b></div>
+          <label>Проект<select id="ideProject" class="select"></select></label>
+          <label>Платформа<select id="ideTarget" class="select"><option value="android">Android · Debug APK</option><option value="windows">Windows · PyInstaller EXE</option><option value="ios_simulator">iOS · Simulator (.app)</option></select></label>
+          <label id="ideSchemeWrap" hidden>Xcode Scheme<input id="ideScheme" placeholder="Например, App"></label>
+          <label>Где собирать<select id="ideMode" class="select"><option value="local">Локально на этом компьютере</option><option value="github">GitHub Actions · подготовка workflow</option></select></label>
+          <p class="hint" id="ideModeHint">Локальная сборка запускает код проекта. Используйте только доверенные проекты.</p>
+          <div class="ide-buttons"><button class="btn btn-ghost sm" id="ideCheck">Проверить инструменты</button><button class="btn btn-primary sm" id="ideBuild">Собрать</button><button class="btn btn-ghost sm" id="ideStop" disabled>Остановить</button><button class="btn btn-ghost sm" id="ideExport" hidden>Скачать проект ZIP</button></div>
+          <div class="ide-check" id="ideCheckResult" role="status">Выберите проект и платформу.</div>
+        </div><div class="ide-card"><div class="ide-card-head"><b>Результат</b></div><div id="ideBuildStatus" class="ide-status">Пока сборок нет</div><p class="hint">После сборки здесь появятся статус и готовые файлы.</p><div id="ideArtifacts" class="ide-artifacts"></div><details class="ide-help"><summary>О сборках и ограничениях</summary><p>Проверяйте готовое приложение на устройстве. iOS Simulator требует macOS и Xcode: результат без подписи, это не IPA для iPhone. GitHub Actions пока запускается вручную.</p></details></div></div>
+        <div class="ide-card ide-log-card"><div class="ide-card-head"><b>Вывод сборки</b><span>LIVE</span></div><pre id="ideLog" class="ide-log">Ожидание запуска…</pre></div>
+      </div>
+    </section>
+
+    <!-- ---------- workspace ---------- -->
+    <section class="view" id="view-workspace">
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-title">Workspace</div>
+          <select class="select" id="wsProject"></select>
+          <select class="select" id="wsScope" title="Общий workspace проекта или личный workspace агента"></select>
+        </div>
+        <div class="topbar-right">
+          <div class="seg" id="wsMode">
+            <button class="active" data-mode="code">Код</button>
+            <button data-mode="preview">Preview</button>
+          </div>
+          <button class="icon-btn" id="wsAttach" title="Прикрепить файл к проекту"><svg class="ic"><use href="#i-clip"/></svg></button>
+          <input type="file" id="wsFileInput" multiple hidden>
+          <button class="icon-btn" id="wsSave" title="Сохранить"><svg class="ic"><use href="#i-save"/></svg></button>
+          <button class="icon-btn" id="wsCopy" title="Копировать"><svg class="ic"><use href="#i-copy"/></svg></button>
+          <button class="icon-btn" id="wsDownload" title="Скачать"><svg class="ic"><use href="#i-download"/></svg></button>
+          <button class="icon-btn" id="wsRefresh" title="Обновить"><svg class="ic"><use href="#i-refresh"/></svg></button>
+        </div>
+      </header>
+      <div class="ws-body">
+        <div class="ws-tree" id="wsTree"></div>
+        <div class="ws-main">
+          <div class="ws-filebar"><span id="wsFilePath">выберите файл</span><span class="ws-filemeta" id="wsFileMeta"></span></div>
+          <textarea class="ws-editor" id="wsEditor" spellcheck="false" placeholder="// файл не выбран"></textarea>
+          <div class="ws-preview" id="wsPreviewWrap" hidden>
+            <iframe id="wsPreview" sandbox="allow-scripts allow-forms allow-modals"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- настройки ---------- -->
+    <!-- ---------- скиллы агентов ---------- -->
+    <section class="view" id="view-skills">
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-title">Скиллы агентов</div>
+          <div class="topbar-sub">свои .md-инструкции, которые видит каждый агент</div>
+        </div>
+        <div class="topbar-right">
+          <button class="btn btn-ghost sm" id="btnSkillImport"><svg class="ic"><use href="#i-clip"/></svg>Импорт .md</button>
+          <button class="btn btn-primary sm" id="btnSkillNew"><svg class="ic"><use href="#i-plus"/></svg>Новый скилл</button>
+        </div>
+      </header>
+      <div class="skills-scroll">
+        <div class="skills-intro">
+          <div class="skills-intro-text">
+            <b>Как это работает.</b> Скилл — обычный markdown-файл с правилами. Включённые скиллы
+            попадают в промпт каждого агента роя: стиль кода, чем пользоваться, чего не делать.
+            Скилл можно править, выключать (агенты его не видят), удалять и выгружать обратно в <code>.md</code>.
+            Агент может дочитать скилл целиком инструментом <code>skill("имя")</code>.
+          </div>
+        </div>
+        <div class="skills-grid" id="skillsList"></div>
+        <div class="skills-empty" id="skillsEmpty" hidden>
+          <div class="empty-icon"><svg class="ic"><use href="#i-skill"/></svg></div>
+          <h3>Скиллов пока нет</h3>
+          <p>Создайте первый — например «Стиль кода» или «Как проверять работу». Или импортируйте готовый .md.</p>
+          <button class="btn btn-primary sm" id="btnSkillNew2"><svg class="ic"><use href="#i-plus"/></svg>Создать скилл</button>
+          <button class="btn btn-ghost sm" id="btnSkillSamples">Вставить примеры</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-plugins">
+      <header class="topbar">
+        <div class="topbar-left"><div class="topbar-title">Плагины агентов</div><div class="topbar-sub">Плагины и инструкции для вашего роя</div></div>
+        <div class="topbar-right"><button class="btn btn-primary sm" id="btnPluginImport"><svg class="ic"><use href="#i-plus"/></svg>Добавить плагин</button></div>
+      </header>
+      <div class="skills-scroll">
+        <div class="skills-intro"><div class="skills-intro-text"><b>Поддерживаются:</b> ZIP плагина Claude Code с <code>skills/</code>, <code>commands/</code> и <code>.mcp.json</code>; Markdown. Инструкции передаются агентам; серверы из плагинов управляются в разделе MCP. Slash-команды импортируются как инструкции, не как команды интерфейса. Hooks, подагенты, скрипты из архива и переменные путей не запускаются. Совместимость не полная.<br><br><b>Безопасность:</b> плагины устанавливаются выключенными. Включайте только доверенные: MCP может запускать программы и использовать сеть с правами пользователя. Проверьте состав и команды перед включением.</div></div>
+        <div class="skills-grid" id="pluginsList"></div>
+        <div class="skills-empty" id="pluginsEmpty" hidden><div class="empty-icon"><svg class="ic"><use href="#i-plug"/></svg></div><h3>Плагинов пока нет</h3><p>Загрузите ZIP плагина или файл Markdown.</p><button class="btn btn-primary sm" id="btnPluginImportEmpty">Добавить плагин</button></div>
+        <input type="file" id="pluginFile" accept=".zip,.md,.markdown" hidden>
+      </div>
+    </section>
+
+    <section class="view" id="view-mcp">
+      <header class="topbar"><div class="topbar-left"><div class="topbar-title">MCP</div><div class="topbar-sub">Серверы и внешние инструменты агентов</div></div><div class="topbar-right"><button class="btn btn-primary sm" id="btnSaveMcp">Сохранить настройки MCP</button></div></header>
+      <div class="settings-scroll">
+        <div class="card" id="cardMcp">
+          <h4><svg class="ic"><use href="#i-plug"/></svg>MCP — внешние инструменты</h4>
+          <label class="switch-row">
+            <div><b>MCP включён</b><span>Инструменты подключённых серверов доступны всем агентам роя:
+              поиск в базе, файлы, браузер, свои API — что умеет сервер</span></div>
+            <input type="checkbox" id="setMcpOn" class="switch">
+          </label>
+          <label class="switch-row">
+            <div><b>Показывать инструменты в промпте</b><span>Список серверов и их инструментов попадает
+              в системный промпт агентов. Выключите, если серверов много и они не нужны в каждой задаче</span></div>
+            <input type="checkbox" id="setMcpPrompt" class="switch">
+          </label>
+          <div class="field"><label>Общий таймаут вызова, сек</label>
+            <input type="number" id="setMcpTimeout" min="0" step="1" value="0">
+            <span class="hint">0 — без лимита: ждём столько, сколько отвечает сервер. Свой таймаут можно
+              задать каждому серверу отдельно.</span>
+          </div>
+          <div class="field">
+            <label>Подключённые серверы</label>
+            <div id="mcpList" class="mcp-list"><div class="hint">Пока ни одного. Добавьте сервер ниже —
+              или нажмите «Демо-сервер», он идёт в комплекте.</div></div>
+          </div>
+          <div class="field">
+            <label>Добавить сервер</label>
+            <div class="hint">Подключайте только доверенные серверы: они могут выполнять программы и обращаться к сети.</div>
+            <button class="btn btn-ghost sm" id="btnMcpImport">Импорт MCP JSON</button>
+            <input type="file" id="mcpFile" accept=".json" hidden>
+            <div class="field-row wrap">
+              <button class="btn btn-ghost sm" id="btnMcpDemo"><svg class="ic"><use href="#i-spark"/></svg>Демо-сервер</button>
+              <button class="btn btn-ghost sm" id="btnMcpFiles"><svg class="ic"><use href="#i-folder"/></svg>Файлы на диске</button>
+              <button class="btn btn-ghost sm" id="btnMcpHttp"><svg class="ic"><use href="#i-globe"/></svg>Сервер по адресу</button>
+            </div>
+          </div>
+          <div class="field"><label>Имя <span class="hint-inline">— так агент называет сервер</span></label>
+            <input id="mcpName" placeholder="например: файлы проекта"></div>
+          <div class="grid-2">
+            <div class="field"><label>Транспорт</label>
+              <select id="mcpTransport">
+                <option value="stdio">stdio — команда запуска</option>
+                <option value="http">http — сервер по адресу</option>
+              </select>
+            </div>
+            <div class="field"><label>Таймаут этого сервера, сек (0 — как общий)</label>
+              <input type="number" id="mcpTimeout" min="0" step="1" value="0"></div>
+          </div>
+          <div id="mcpStdioFields">
+            <div class="field"><label>Команда запуска</label>
+              <input id="mcpCommand" placeholder="npx -y @modelcontextprotocol/server-filesystem /tmp" spellcheck="false">
+              <span class="hint">Запускается как процесс, JSON-RPC идёт в stdin/stdout. Нужен npx, uvx, python — любой MCP-сервер.</span>
+            </div>
+            <div class="field"><label>Переменные окружения <span class="hint-inline">KEY=значение, по одной в строке</span></label>
+              <textarea id="mcpEnv" rows="2" placeholder="API_KEY=…" spellcheck="false"></textarea></div>
+          </div>
+          <div id="mcpHttpFields" hidden>
+            <div class="field"><label>Адрес сервера</label>
+              <input id="mcpUrl" placeholder="https://example.com/mcp" spellcheck="false"></div>
+            <div class="field"><label>Заголовки <span class="hint-inline">Name=значение, по одному в строке; Authorization скрывается</span></label>
+              <textarea id="mcpHeaders" rows="2" placeholder="Authorization=Bearer …" spellcheck="false"></textarea></div>
+          </div>
+          <div class="field-row">
+            <button class="btn btn-primary sm" id="btnMcpAdd"><svg class="ic"><use href="#i-plus"/></svg>Подключить</button>
+            <button class="btn btn-ghost sm" id="btnMcpReset">Очистить форму</button>
+          </div>
+          <div class="hint" id="mcpHint">Сервер сам скажет, какие инструменты у него есть, — они появятся
+            у агентов. Проверка подключения тут же показывает список.</div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="view" id="view-settings">
+      <header class="topbar">
+        <div class="topbar-left"><div class="topbar-title">Настройки</div></div>
+        <div class="topbar-right"><button class="btn btn-primary sm" id="btnSaveSettings"><svg class="ic"><use href="#i-check"/></svg>Сохранить</button></div>
+      </header>
+      <div class="settings-scroll">
+
+        <div class="card" id="languageSettings">
+          <h4><svg class="ic"><use href="#i-globe"/></svg>Язык интерфейса</h4>
+          <div class="field">
+            <label for="mrcLanguage">Язык</label>
+            <select id="mrcLanguage" aria-label="Язык интерфейса">
+              <option value="ru">Русский</option><option value="en">English</option>
+            </select>
+            <span class="hint">Изменения применяются сразу и сохраняются в этом браузере. Перевод интерфейса пока неполный.</span>
+          </div>
+        </div>
+
+        <div class="profile-card">
+          <div class="avatar lg" id="profileAvatar"></div>
+          <div class="profile-info">
+            <h3 id="profileName">—</h3>
+            <p id="profileEmail">—</p>
+            <span class="chip" id="profileProvider">локальный</span>
+          </div>
+          <div class="profile-actions">
+            <div class="nick-edit">
+              <input id="profileNick" class="nick-input" maxlength="32" placeholder="новый ник" spellcheck="false">
+              <button class="btn btn-ghost sm" id="btnRename">Сменить</button>
+            </div>
+            <button class="btn btn-ghost sm" id="btnLogout"><svg class="ic"><use href="#i-logout"/></svg>Выйти</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4><svg class="ic"><use href="#i-lock"/></svg>Пароль</h4>
+          <div class="grid-2">
+            <div class="field"><label>Текущий</label><input type="password" id="passCur" placeholder="••••••"></div>
+            <div class="field"><label>Новый</label><input type="password" id="passNew" placeholder="минимум 6 символов"></div>
+          </div>
+          <button class="btn btn-ghost sm" id="btnChangePass"><svg class="ic"><use href="#i-check"/></svg>Сменить пароль</button>
+        </div>
+
+        <div class="card">
+          <h4><svg class="ic"><use href="#i-spark"/></svg>Модель</h4>
+          <div class="field"><label>API-ключ</label>
+            <div class="field-row">
+              <input type="password" id="setApiKey" placeholder="API-ключ провайдера">
+              <button class="btn btn-ghost sm" id="btnClearKey">Очистить</button>
+            </div>
+            <div class="hint" id="keyHint">Ключ хранится локально в базе приложения.</div>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label>Модель</label><input id="setModel" value="mercury-3"></div>
+            <div class="field"><label>Base URL</label><input id="setBaseUrl" value="https://api.inceptionlabs.ai/v1"></div>
+            <div class="field"><label>Effort — глубина рассуждения</label>
+              <select id="setReasoning">
+                <option value="instant">instant</option><option value="low">low</option>
+                <option value="medium">medium</option><option value="high">high</option>
+              </select>
+            </div>
+            <div class="field"><label>Параллельных запросов</label><input type="number" id="setConcurrency" min="1" max="24" value="6"></div>
+          </div>
+          <div class="provider-test-row">
+            <button class="btn btn-ghost sm" type="button" id="btnTestProvider"><span class="provider-spinner" hidden></span><span>Проверить провайдера</span></button>
+            <div id="providerTestResult" class="hint" role="status" aria-live="polite"></div>
+          </div>
+          <p class="hint">Проверка отправляет короткий платный запрос с текущими значениями формы без сохранения. Поддержка зависит от API провайдера. Для Mercury 3, 2.5 и 2 доступны instant, low, medium и high. Для других моделей этот список не гарантирует поддержку: проверьте документацию провайдера. Effort применяется к следующим запросам чата и агентов.</p>
+          <label class="switch-row">
+            <div><b>Демо-режим</b><span>Агенты имитируют работу без API-ключа — удобно посмотреть интерфейс</span></div>
+            <input type="checkbox" id="setDemo" class="switch">
+          </label>
+        </div>
+
+        <div class="card">
+          <h4><svg class="ic"><use href="#i-terminal"/></svg>Доступы агентов</h4>
+          <label class="switch-row">
+            <div><b>Терминал</b><span>Агенты запускают любые команды: пайпы, cd куда угодно, любые утилиты</span></div>
+            <input type="checkbox" id="setTerminal" class="switch">
+          </label>
+          <label class="switch-row">
+            <div><b>Строгий режим команд</b><span>Вернуть allowlist (python, git, ls…) и запрет разрушительных команд</span></div>
+            <input type="checkbox" id="setStrict" class="switch">
+          </label>
+          <label class="switch-row">
+            <div><b>Интернет</b><span>Поиск и открытие страниц для разведки</span></div>
+            <input type="checkbox" id="setNetwork" class="switch">
+          </label>
+          <div class="field"><label>Таймаут команды, сек</label><input type="number" id="setTimeout" min="3" max="120" value="20"></div>
+        </div>
+
+        <div class="card">
+          <h4><svg class="ic"><use href="#i-refresh"/></svg>Рой и защита от зацикливания</h4>
+          <label class="switch-row">
+            <div><b>Защита от зацикливания</b><span>Стоп, если агент повторяет одно действие или файлы не меняются.
+              Выключите — агент будет работать до конца времени, без остановок</span></div>
+            <input type="checkbox" id="setLoopGuard" class="switch">
+          </label>
+          <div class="field"><label>Промежуточное слияние, сек</label>
+            <input type="number" id="setMergeInterval" min="0" max="600" value="20">
+            <span class="hint">Раз в сколько секунд главный подмешивает работы агентов в общий проект,
+              чтобы коллеги видели чужие файлы. 0 — только в конце.</span>
+          </div>
+          <div class="field"><label>Свой SearXNG (необязательно)</label>
+            <input id="setSearx" placeholder="http://127.0.0.1:8080" spellcheck="false">
+            <span class="hint">Если задан — поиск идёт через ваш SearXNG, а не через DuckDuckGo и Bing.</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4><svg class="ic"><use href="#i-mail"/></svg>Почта — агенты читают и отвечают</h4>
+          <div class="grid-2">
+            <div class="field"><label>IMAP-сервер</label>
+              <input id="setMailImapHost" placeholder="imap.yandex.ru" spellcheck="false"></div>
+            <div class="field"><label>Порт IMAP</label><input type="number" id="setMailImapPort" value="993"></div>
+            <div class="field"><label>Шифрование IMAP</label>
+              <select id="setMailImapEnc">
+                <option value="ssl">SSL (993)</option>
+                <option value="starttls">STARTTLS (143)</option>
+                <option value="none">без шифрования (локальный сервер)</option>
+              </select></div>
+            <div class="field"><label>Логин (полный адрес)</label>
+              <input id="setMailUser" placeholder="you@yandex.ru" spellcheck="false"></div>
+            <div class="field"><label>SMTP-сервер</label>
+              <input id="setMailSmtpHost" placeholder="smtp.yandex.ru" spellcheck="false"></div>
+            <div class="field"><label>Порт SMTP</label><input type="number" id="setMailSmtpPort" value="465"></div>
+            <div class="field"><label>Шифрование SMTP</label>
+              <select id="setMailSmtpEnc">
+                <option value="ssl">SSL (465)</option>
+                <option value="starttls">STARTTLS (587)</option>
+                <option value="none">без шифрования (локальный сервер)</option>
+              </select></div>
+            <div class="field"><label>Папка по умолчанию</label>
+              <input id="setMailFolder" placeholder="INBOX" spellcheck="false"></div>
+          </div>
+          <div class="field"><label>Пароль приложения</label>
+            <div class="field-row">
+              <input type="password" id="setMailPassword" placeholder="• • • • • • • •  (не основной пароль)">
+              <button class="btn btn-ghost sm" id="btnClearMailPass">Очистить</button>
+            </div>
+            <div class="hint" id="mailHint">Пароль хранится локально в базе приложения и в логи не попадает.
+              Gmail/Яндекс не пускают по обычному паролю — нужен «пароль приложения».</div>
+          </div>
+          <div class="field"><label>Адрес отправителя</label>
+            <input id="setMailFrom" placeholder="you@yandex.ru" spellcheck="false"></div>
+          <label class="switch-row">
+            <div><b>Агенты могут отправлять письма</b><span>Выключите — агенты смогут только читать и искать</span></div>
+            <input type="checkbox" id="setMailSend" class="switch">
+          </label>
+          <button class="btn btn-ghost sm" id="btnMailTest"><svg class="ic"><use href="#i-check"/></svg>Проверить связь</button>
+          <div class="hint" id="mailTestOut"></div>
+        </div>
+
+
+        <div class="card">
+          <h4><svg class="ic"><use href="#i-note"/></svg>Музыка</h4>
+          <label class="switch-row">
+            <div><b>Музыка во время работы</b><span>Тихая тема играет по кругу, пока идёт проект.
+              Выключить можно здесь или кнопкой с колонкой внизу слева</span></div>
+            <input type="checkbox" id="setMusicOn" class="switch">
+          </label>
+          <div class="field"><label>Громкость: <b id="musicVolLabel">35</b>%</label>
+            <input type="range" id="setMusicVolume" min="0" max="100" step="1" value="35" class="range">
+          </div>
+          <label class="switch-row">
+            <div><b>Плавно поднимать громкость</b><span>Тема входит тихо и нарастает за пару секунд</span></div>
+            <input type="checkbox" id="setMusicFade" class="switch">
+          </label>
+          <div class="field">
+            <label>Своя музыка</label>
+            <div class="field-row">
+              <button class="btn btn-ghost sm" id="btnMusicUpload"><svg class="ic"><use href="#i-clip"/></svg>Загрузить свой трек</button>
+              <button class="btn btn-ghost sm" id="btnMusicReset">Вернуть встроенную</button>
+            </div>
+            <div class="hint" id="musicHint">Встроенная тема — своя, написанная для приложения.
+              Хотите другую песню — загрузите свой файл (.ogg, .mp3, .wav, .flac): он играет по кругу,
+              громкость и выключение остаются здесь.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4><svg class="ic"><use href="#i-skill"/></svg>Обучение</h4>
+          <div class="field"><label>Первый вход</label>
+            <div class="field-row">
+              <button class="btn btn-ghost sm" id="btnTourAgain"><svg class="ic"><use href="#i-play"/></svg>Показать обучение снова</button>
+              <label class="switch-row inline"><div><b>С голосом</b></div>
+                <input type="checkbox" id="setTourVoice" class="switch" checked></label>
+            </div>
+            <div class="hint">Обучение показывается один раз при первом входе: короткие шаги с озвучкой —
+              что где лежит, как создать проект, как приложить файл и написать скилл.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4><svg class="ic"><use href="#i-eye"/></svg>Внешний вид</h4>
+          <div class="field"><label>Акцент</label>
+            <div class="swatches" id="accents">
+              <button data-accent="violet" class="sw active" style="--sw:#7C5CFF"></button>
+              <button data-accent="blue" class="sw" style="--sw:#3B82F6"></button>
+              <button data-accent="mint" class="sw" style="--sw:#3ECF8E"></button>
+              <button data-accent="amber" class="sw" style="--sw:#F5A524"></button>
+              <button data-accent="rose" class="sw" style="--sw:#F43F5E"></button>
+            </div>
+          </div>
+          <label class="switch-row">
+            <div><b>Светлая тема</b><span>Для светлых экранов и печати</span></div>
+            <input type="checkbox" id="setLight" class="switch">
+          </label>
+        </div>
+
+        <div class="card danger">
+          <h4><svg class="ic"><use href="#i-db"/></svg>Данные</h4>
+          <div class="kv"><span>База</span><code>data/studio.db</code></div>
+          <div class="kv"><span>Workspace</span><code>data/workspace/</code></div>
+          <button class="btn btn-danger sm" id="btnWipe">Удалить все проекты и чаты</button>
+        </div>
+
+        <div class="about">MRC Agent <span id="appVersion">v…</span> · Python + stdlib · Mercury 3 (Inception Labs)</div>
+      </div>
+    </section>
+
+  </main>
+
+  <aside class="drawer" id="drawer" aria-hidden="true"></aside>
+  <div class="drawer-scrim" id="drawerScrim" hidden></div>
+
+  <div class="palette-wrap" id="paletteWrap" hidden>
+    <div class="palette">
+      <div class="palette-input"><svg class="ic"><use href="#i-search"/></svg><input id="paletteInput" placeholder="Куда перейти или что сделать…"></div>
+      <div class="palette-list" id="paletteList"></div>
+      <div class="palette-foot"><span><kbd>↑</kbd><kbd>↓</kbd> выбор</span><span><kbd>↵</kbd> открыть</span><span><kbd>esc</kbd> закрыть</span></div>
+    </div>
+  </div>
+
+  <audio id="musicAudio" loop preload="auto"></audio>
+  <input type="file" id="musicFileInput" accept=".ogg,.mp3,.wav,.flac,.m4a,.opus,audio/*" hidden>
+  <input type="file" id="skillFileInput" accept=".md,.markdown,.txt" hidden>
+
+  <!-- плавная загрузка проекта -->
+  <div class="loader-wrap" id="loader" hidden aria-hidden="true">
+    <div class="loader-card">
+      <div class="loader-art">
+        <div class="loader-ring r1"></div>
+        <div class="loader-ring r2"></div>
+        <div class="loader-ring r3"></div>
+        <div class="loader-core"><svg class="ic"><use href="#i-mark"/></svg></div>
+        <div class="loader-spark s1"></div>
+        <div class="loader-spark s2"></div>
+        <div class="loader-spark s3"></div>
+      </div>
+      <h3 id="loaderTitle">Собираю проект</h3>
+      <p id="loaderText">поднимаю рой…</p>
+      <div class="loader-bar"><i id="loaderBar"></i></div>
+      <div class="loader-steps" id="loaderSteps"></div>
+    </div>
+  </div>
+
+  <!-- обучение при первом входе -->
+  <div class="tour-wrap" id="tour" hidden aria-hidden="true">
+    <div class="tour-card">
+      <div class="tour-art" id="tourArt"></div>
+      <div class="tour-body">
+        <div class="tour-top">
+          <span class="tour-no" id="tourNo">1 / 7</span>
+          <button class="icon-btn" id="tourClose" title="Закрыть"><svg class="ic"><use href="#i-close"/></svg></button>
+        </div>
+        <h3 id="tourTitle">Добро пожаловать</h3>
+        <p id="tourText"></p>
+        <ul class="tour-list" id="tourList"></ul>
+        <div class="tour-dots" id="tourDots"></div>
+        <div class="tour-actions">
+          <label class="switch-row inline tour-voice">
+            <div><b>Голос</b></div>
+            <input type="checkbox" id="tourVoice" class="switch" checked>
+          </label>
+          <span class="tour-gap"></span>
+          <button class="btn btn-ghost sm" id="tourPrev">Назад</button>
+          <button class="btn btn-primary sm" id="tourNext">Дальше</button>
+        </div>
+        <button class="tour-skip" id="tourSkip">Пропустить обучение</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toasts" id="toasts"></div>
+</div>
+
+<script src="/static/language.js"></script>
+<script src="/static/voice-output.js"></script>
+<script src="/static/app.js"></script>
+<script src="/static/voice-input.js"></script>
+</body>
+</html>

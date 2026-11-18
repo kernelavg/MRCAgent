@@ -1,0 +1,11 @@
+source/data/
+source/dist/
+source/build/
+source/.venv/
+source/__pycache__/
+source/static/voices/
+source/mobile-android/.gradle/
+source/mobile-android/app/build/
+*.pyc
+*.log
+.env
